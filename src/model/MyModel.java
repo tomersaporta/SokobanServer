@@ -1,21 +1,28 @@
 package model;
 
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 import db.Level;
+import db.QueryParams;
 import db.Record;
 import db.User;
 import model.highScore.DbManager;
-import model.highScore.QueryParams;
 import model.sokobanSolver.SokobanSolver;
+import search.Action;
 
 public class MyModel implements IModel{
 	
 	private DbManager dbManager;
 	private SokobanSolver solver;
+	private Lock lock;
 	
-	public MyModel() {
+	public MyModel(Lock lock) {
+		this.solver=new SokobanSolver();
+		
 		this.dbManager=DbManager.getInstance();
+		
+		this.lock=lock;
 	}
 
 	@Override
@@ -27,7 +34,9 @@ public class MyModel implements IModel{
 	public void addUser(User user) {
 		if(!dbManager.isUserExistInTable(user.getName())){
 			dbManager.add(user);
+			System.out.println("the user was added");
 		}
+		lock.unlock();
 	}
 
 	@Override
@@ -43,9 +52,11 @@ public class MyModel implements IModel{
 
 	@Override
 	public String getSolution(Level level) {
-		
 		//to compress the solution
-		return this.solver.solveLevel(level).toString();
+		List<Action> sol=this.solver.solveLevel(level);
+		return sol.toString();
 	}
+	
+	
 
 }

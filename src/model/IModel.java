@@ -5,7 +5,7 @@ import java.util.List;
 import db.Level;
 import db.Record;
 import db.User;
-import model.highScore.QueryParams;
+import db.QueryParams;
 
 public interface IModel {
 	

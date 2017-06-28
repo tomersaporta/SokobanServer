@@ -12,14 +12,21 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 import db.Level;
+import db.QueryParams;
 import db.Record;
 import db.User;
 
-public class DbManager {
-	private static DbManager instance = new DbManager();
 
+
+
+public class DbManager {
+	
+	private static class DbManagerHolder{
+		public static final DbManager instance = new DbManager();
+	}
+	
 	public static DbManager getInstance() {
-		return instance;
+		return DbManagerHolder.instance;
 	}
 
 	private SessionFactory factory;
