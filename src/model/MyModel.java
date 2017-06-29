@@ -52,9 +52,25 @@ public class MyModel implements IModel{
 
 	@Override
 	public String getSolution(Level level) {
-		//to compress the solution
 		List<Action> sol=this.solver.solveLevel(level);
-		return sol.toString();
+		StringBuilder sb= new StringBuilder();
+		
+		for(Action a:sol){
+		switch(a.getAction()){
+			case "right": sb.append("r");
+			  		      break;
+			case "left": sb.append("l");
+		      			  break;
+			case "up": sb.append("u");
+		                  break;
+			case "down": sb.append("d");
+		      			  break;
+			}
+		}
+		
+		System.out.println("sol: "+sb.toString());
+			
+		return sb.toString();
 	}
 	
 	

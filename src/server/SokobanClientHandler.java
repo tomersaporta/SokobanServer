@@ -9,12 +9,21 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import commands.Commands;
 import db.CompressedLevel;
 import db.Level;
+import db.LevelSolutionData;
 import db.QueryParams;
 import db.Record;
 import db.User;
@@ -103,26 +112,66 @@ public class SokobanClientHandler implements ClientHandler {
 				
 				break;
 			}
-			case GET_SOLUTION: {
+			case GET_HINT:{
 				this.locker.unlock();
 				CompressedLevel compLevel = this.json.fromJson(params, CompressedLevel.class);
-
 				Level level = compLevel.decompressLevel();
-				
 				if (level == null) {
 					String aJson = this.json.toJson("Error solving level");
 					this.writeToClient.println(aJson);
 					this.writeToClient.flush();
 					break;
 				}
-
 				String sol= this.model.getSolution(level);
-				
 				String aJson = this.json.toJson(sol);
 				this.writeToClient.println(aJson);
 				this.writeToClient.flush();
-
 				break;
+			}
+			case GET_SOLUTION: {
+				this.locker.unlock();
+				CompressedLevel compLevel = this.json.fromJson(params, CompressedLevel.class);
+				Level level = compLevel.decompressLevel();
+				if (level == null) {
+					String aJson = this.json.toJson("Error solving level");
+					this.writeToClient.println(aJson);
+					this.writeToClient.flush();
+					break;
+				}
+				
+				//checking if the solution exsits in the DB
+				Client client = ClientBuilder.newClient();	
+				WebTarget webTarget2 = client.target("http://localhost:8080/RESTSokobenService/SokobanServices/get/"+level.getLevelID());
+				Invocation.Builder invocationBuilder2 = webTarget2.request();
+				Response response = invocationBuilder2.get();	
+				String solutionJson = response.readEntity(String.class);
+				System.out.println("from query: "+solutionJson);
+				if(solutionJson.equals("null")){
+					System.out.println("from solver");
+					String sol= this.model.getSolution(level);
+					
+					String aJson = this.json.toJson(sol);
+					this.writeToClient.println(aJson);
+					this.writeToClient.flush();
+					
+					//send the solution to the service
+					LevelSolutionData levelSol=new LevelSolutionData(level.getLevelID(), sol, null);
+					String solJson=this.json.toJson(levelSol);
+					
+					WebTarget webTarget = client.target("http://localhost:8080/RESTSokobenService/SokobanServices/add");
+					Invocation.Builder invocationBuilder = webTarget.request();
+					invocationBuilder.post(Entity.entity(solJson, MediaType.TEXT_PLAIN));
+
+					break;
+				}
+				else{
+					System.out.println("from web service");
+					LevelSolutionData levelSol=this.json.fromJson(solutionJson, LevelSolutionData.class);
+					String aJson = this.json.toJson(levelSol.getSolution());
+					this.writeToClient.println(aJson);
+					this.writeToClient.flush();
+					break;
+				}
 			}
 			}
 
