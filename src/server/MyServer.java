@@ -12,7 +12,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import commons.SokobanClient;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import model.admin.AdminModel;
+
 public class MyServer {
+	
+	private static int clientId=0;
 	
 	private static class LockHolder{
 		public static final Lock locker = new ReentrantLock();
@@ -22,12 +29,14 @@ public class MyServer {
 	private volatile boolean stop;
 	private ExecutorService excutor;
 	private Lock locker;
+	public ListProperty<String> listOfClient;
 
 	public MyServer(int port) {
 		this.port=port;
 		this.stop=false;
 		this.excutor=Executors.newFixedThreadPool(15);
 		this.locker=LockHolder.locker;
+		this.listOfClient=new SimpleListProperty<>();
 	}
 	
 	private void runServer()throws Exception { 
@@ -47,7 +56,8 @@ public class MyServer {
 					
 					InputStream inFromClient=aClient.getInputStream();
 					OutputStream outToClient=aClient.getOutputStream();
-					
+					SokobanClient client=new SokobanClient(++clientId, aClient.getRemoteSocketAddress().toString(), aClient.getPort(), aClient);
+					AdminModel.getInstance().addClient(clientId, client);
 					new SokobanClientHandler(this.locker).handleClient(inFromClient, outToClient);
 					inFromClient.close(); 
 					outToClient.close(); 

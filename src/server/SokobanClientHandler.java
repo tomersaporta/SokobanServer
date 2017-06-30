@@ -55,8 +55,18 @@ public class SokobanClientHandler implements ClientHandler {
 		this.readFromClient = new BufferedReader(new InputStreamReader(inFromClient));
 		this.writeToClient = new PrintWriter(outToClient);
 		
+		try {
+			String strClientIdentityJson=this.readFromClient.readLine();
+			String  strClientIdentity=this.json.fromJson(strClientIdentityJson, String.class);
+			//MyServer.listOfClient.add(strClientIdentity);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		handleClientCommands();
-
+		
+		
 	}
 
 	public void handleClientCommands() {
