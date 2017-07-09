@@ -5,7 +5,12 @@ import db.Level;
 import sokoElements.Position;
 import search.Searchable;
 import search.State;
-
+/**
+ * 
+ * Defines the common searchable's data.
+ * Implements general methods.
+ *
+ */
 public abstract class CommonSearchable implements Searchable<Position>{
 
 	private Position fromPosition;
@@ -32,6 +37,9 @@ public abstract class CommonSearchable implements Searchable<Position>{
 		this.board[fromPosition.getX()][fromPosition.getY()]=' ';
 	}
 	
+	/**
+	 * Generate the initial state
+	 */
 	@Override
 	public State<Position> getInitialState() {
 		State<Position> start=new State<Position>(fromPosition, 0);
@@ -40,6 +48,10 @@ public abstract class CommonSearchable implements Searchable<Position>{
 		return start;
 	}
 
+	
+	/**
+	 * Generate the goal state
+	 */
 	@Override
 	public State<Position> getGoalState() {
 		return new State<Position>(toPosition, 0);

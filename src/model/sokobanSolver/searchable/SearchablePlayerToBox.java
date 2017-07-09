@@ -6,6 +6,10 @@ import sokoElements.Position;
 import search.Action;
 import search.State;
 
+/**
+ * 
+ *Adapter which implements getAllPossiableStates when the player needs to reach to the box
+ */
 public class SearchablePlayerToBox extends CommonSearchable {
 
 	public SearchablePlayerToBox(Position fromPosition, Position toPosition, char[][] board) {

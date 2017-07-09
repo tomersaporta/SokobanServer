@@ -1,8 +1,6 @@
 package server;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -12,11 +10,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import commons.SokobanClient;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import model.admin.AdminModel;
-
+/**
+ * Sokoban Server.
+ * Multi client server.
+ * This server handle the records and solution functionality
+ *
+ */
 public class MyServer {
 	
 	private static int clientId=0;
@@ -29,16 +28,19 @@ public class MyServer {
 	private volatile boolean stop;
 	private ExecutorService excutor;
 	private Lock locker;
-	public ListProperty<String> listOfClient;
 
 	public MyServer(int port) {
 		this.port=port;
 		this.stop=false;
 		this.excutor=Executors.newFixedThreadPool(15);
 		this.locker=LockHolder.locker;
-		this.listOfClient=new SimpleListProperty<>();
 	}
 	
+	/**
+	 * Hanlde numbers of clients.
+	 * Open session to each client
+	 * @throws Exception
+	 */
 	private void runServer()throws Exception { 
 		
 		ServerSocket server=new ServerSocket(this.port);
@@ -51,20 +53,16 @@ public class MyServer {
 			Socket aClient=server.accept(); // blocking call
 			
 				excutor.execute(()->{
-					try{
-					System.out.println("The client is connected");
 					
-					InputStream inFromClient=aClient.getInputStream();
-					OutputStream outToClient=aClient.getOutputStream();
-					SokobanClient client=new SokobanClient(++clientId, aClient.getRemoteSocketAddress().toString(), aClient.getPort(), aClient);
-					AdminModel.getInstance().addClient(clientId, client);
-					new SokobanClientHandler(this.locker).handleClient(inFromClient, outToClient);
-					inFromClient.close(); 
-					outToClient.close(); 
-					aClient.close(); 
-					}catch(IOException e) {
-						//to remove the client from the list of clients
-					} 
+					try {
+
+						System.out.println("The client is connected");
+						new SokobanClientHandler(this.locker).handleClient(++clientId,aClient);
+						aClient.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				});
 			
 			}catch (SocketTimeoutException e) {}
@@ -72,6 +70,9 @@ public class MyServer {
 		server.close();
 	}
 	
+	/**
+	 * Put the runServer in a thread
+	 */
 	public void start(){ 
 		new Thread(new Runnable() {
 			@Override
@@ -84,6 +85,10 @@ public class MyServer {
 		}).start();
 	}
 
+	/**
+	 * Stopping the server.
+	 * 
+	 */
 	public void stop(){ 
 		this.excutor.shutdown();
 		try {
@@ -94,5 +99,6 @@ public class MyServer {
 			stop=true;
 		}	
 	}
+	
 }
 

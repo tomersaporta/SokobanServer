@@ -17,7 +17,10 @@ import db.Record;
 import db.User;
 
 
-
+/**
+ * 
+ *Manage the Recored's DB
+ */
 
 public class DbManager {
 	
@@ -41,6 +44,10 @@ public class DbManager {
 		factory = configuration.buildSessionFactory();
 	}
 
+	/**
+	 * Adding an user/record/level to the DB
+	 * @param obj the object to add
+	 */
 	public void add(Object obj) {
 		Session session = null;
 		Transaction tx = null;
@@ -61,6 +68,11 @@ public class DbManager {
 		}
 	}
 
+	/**
+	 * Query to the DB
+	 * @param params the query parameters
+	 * @return The DB results
+	 */
 	public List<Record> recordsQuery(QueryParams params) {
 		Session session = null;
 		//Record record = null;
@@ -105,6 +117,11 @@ public class DbManager {
 
 	}
 
+	/**
+	 * Checking if the level exists in the DB by the levelId
+	 * @param levelId 
+	 * @return true if the level exists else false
+	 */
 	public boolean isLevelExistInTable(String levelId) {
 		Session session = null;
 		Query query = null;
@@ -127,6 +144,12 @@ public class DbManager {
 
 		return false;
 	}
+	
+	/**
+	 * Checking if the user exists in the DB by the userName
+	 * @param levelId 
+	 * @return true if the user exists else false
+	 */
 	public boolean isUserExistInTable(String userName) {
 		Session session = null;
 		Query query = null;

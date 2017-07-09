@@ -1,6 +1,10 @@
 package model.sokobanSolver.searchable;
 
-
+/**
+ *Define Sokoban state.
+ *Contains the level board.
+ *Implements toString, hashCode, equals according to the game defenitions 
+ */
 public class SokobanState {
 
 	private char[][]board;

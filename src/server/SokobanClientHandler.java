@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
@@ -21,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import commands.Commands;
+import commons.SokobanClient;
 import db.CompressedLevel;
 import db.Level;
 import db.LevelSolutionData;
@@ -29,8 +31,12 @@ import db.Record;
 import db.User;
 import model.IModel;
 import model.MyModel;
+import model.admin.AdminModel;
 
-
+/**
+ * Handle Sokoban's clients
+ *
+ */
 public class SokobanClientHandler implements ClientHandler {
 
 	private BufferedReader readFromClient;
@@ -49,26 +55,51 @@ public class SokobanClientHandler implements ClientHandler {
 		
 	}
 
+	/**
+	 * Handle the clients command.
+	 * Update the AdminModel about the client.
+	 */
 	@Override
-	public void handleClient(InputStream inFromClient, OutputStream outToClient) {
-
-		this.readFromClient = new BufferedReader(new InputStreamReader(inFromClient));
-		this.writeToClient = new PrintWriter(outToClient);
+	public void handleClient(int clientId,Socket socket) {
+		InputStream inFromClient=null;
+		OutputStream outToClient=null;
 		
 		try {
+			inFromClient=socket.getInputStream();
+			outToClient=socket.getOutputStream();
+			
+			this.readFromClient = new BufferedReader(new InputStreamReader(inFromClient));
+			this.writeToClient = new PrintWriter(outToClient);
+			
 			String strClientIdentityJson=this.readFromClient.readLine();
 			String  strClientIdentity=this.json.fromJson(strClientIdentityJson, String.class);
-			//MyServer.listOfClient.add(strClientIdentity);
+			
+			strClientIdentity="client "+clientId+" "+strClientIdentity;
+			SokobanClient client=new SokobanClient(++clientId, socket.getRemoteSocketAddress().toString(), socket.getPort(), socket);
+			
+			AdminModel.getInstance().addClient(strClientIdentity, client);
+			handleClientCommands();
+			//AdminModel.getInstance().disconnectClient(strClientIdentity);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally{
+			try {
+				inFromClient.close();
+				outToClient.close();
+				this.readFromClient.close();
+				this.writeToClient.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-		
-		handleClientCommands();
-		
 		
 	}
 
+	
+	/**
+	 * Handle Sokoban Clients according to the protocol
+	 */
 	public void handleClientCommands() {
 		System.out.println("Time: "+System.currentTimeMillis());
 		this.locker.lock();

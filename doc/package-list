@@ -1,0 +1,10 @@
+boot
+commons
+model
+model.admin
+model.highScore
+model.sokobanSolver
+model.sokobanSolver.plannable
+model.sokobanSolver.searchable
+server
+view

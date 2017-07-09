@@ -1,7 +1,11 @@
 package commons;
 
 import java.net.Socket;
-
+/**
+ * Defines the Sokoban's client details.
+ * This details are shown to the admin of the server.
+ *
+ */
 public class SokobanClient {
 
 	private int id;

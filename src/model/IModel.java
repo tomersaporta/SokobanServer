@@ -6,7 +6,10 @@ import db.Level;
 import db.Record;
 import db.User;
 import db.QueryParams;
-
+/**
+ * 
+ *Defines the behavior that the model needs to implements
+ */
 public interface IModel {
 	
 	public List<Record> dbQuery(QueryParams params);

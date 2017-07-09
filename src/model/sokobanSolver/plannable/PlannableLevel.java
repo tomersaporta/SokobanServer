@@ -20,6 +20,11 @@ import strips.PlanAction;
 import strips.Plannable;
 import strips.Predicate;
 
+/**
+ * 
+ *implements the Plannable interface.
+ *Makes the adaptation between our Sokoban and the plan problem
+ */
 public class PlannableLevel implements Plannable {
 
 	private Level level;
@@ -40,6 +45,9 @@ public class PlannableLevel implements Plannable {
 		this.search = new BFS<Position>();
 	}
 
+	/**
+	 * Generate the goal state from the level
+	 */
 	@Override
 	public Clause getGoal() {
 	
@@ -62,6 +70,10 @@ public class PlannableLevel implements Plannable {
 		
 	}
 
+	
+	/**
+	 * Generate the knowledge base from the level
+	 */
 	@Override
 	public Clause getKnowledgebase() {
 
@@ -93,6 +105,10 @@ public class PlannableLevel implements Plannable {
 		return null;
 	}
 
+	/**
+	 * 
+	 * Returns the suitable action which satisfied the predicate
+	 */
 	@Override
 	public PlanAction getsatisfyingAction(Predicate top, Clause knowledgeBase) {
 
@@ -138,7 +154,12 @@ public class PlannableLevel implements Plannable {
 
 		return null;
 	}
-
+	
+	/**
+	 * Generate the level board according the the predicated in the knowledge base
+	 * @param knowledgeBase list of predeicates which describe the state of the game
+	 * @return 2D char array with the board
+	 */
 	public char[][] generateBoredByKnowledgeBase(Clause knowledgeBase) {
 		char[][] stateBored = copyBoard(unMoveableBoard);
 		Position pos;
@@ -162,6 +183,11 @@ public class PlannableLevel implements Plannable {
 		return stateBored;
 	}
 
+	/**
+	 * Generate Position (object) from string
+	 * @param pos the string position description
+	 * @return Position object
+	 */
 	public Position generatePosition(String pos) {
 		String s = pos.replace("(", "");
 		s = s.replace(")", "");
@@ -212,6 +238,12 @@ public class PlannableLevel implements Plannable {
 		return newBoard;
 	}
 
+	/**
+	 * Generate the player position from the last action and the currents position
+	 * @param action the last action
+	 * @param currPos the current position of the player
+	 * @return the player updated position
+	 */
 	private Position getPlayerPos(Action action, Position currPos) {
 		if (action != null) {
 			String act = action.getAction();
@@ -227,6 +259,10 @@ public class PlannableLevel implements Plannable {
 		return null;
 	}
 	
+	/**
+	 * Order the goals in priority queue according to Manattan distance
+	 * @return the priority queue with the goals
+	 */
 	private PriorityQueue<Target> heuristicGoal(){
 		
 		PriorityQueue<Target>priorityQueue=new PriorityQueue<>(new Comparator<Target>() {
@@ -246,6 +282,11 @@ public class PlannableLevel implements Plannable {
 		
 	}
 	
+	/**
+	 * calculate Manhattan distance from the player to the goal 
+	 * @param pos the goal position
+	 * @return the distance
+	 */
 	private int getManhattanDistance(Position pos){
 		Position playerPos=level.getListPlayer().get(0).getPosition();
 				

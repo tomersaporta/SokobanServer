@@ -2,7 +2,10 @@ package model;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
+/**
+ * 
+ * Singleton Locker which helps to synchronized actions from some threads 
+ */
 public class Locker {
 
 	private static class LockHolder{

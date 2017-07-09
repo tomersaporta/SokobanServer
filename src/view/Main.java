@@ -12,7 +12,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			MyServer server=new MyServer(9780);
+			MyServer server=new MyServer(9999);
 			
 			new Thread(new Runnable() {
 				
@@ -26,8 +26,9 @@ public class Main extends Application {
 			FXMLLoader loader=new FXMLLoader(getClass().getResource("MainWindow.fxml"));
 			AnchorPane root = (AnchorPane)loader.load();
 			MainWindowController view=loader.getController();
-			
-			Scene scene = new Scene(root,600,600);
+			view.setPrimaryStage(primaryStage);
+			view.setServer(server);
+			Scene scene = new Scene(root,600,500);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();

@@ -6,15 +6,28 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainWindowController">
+<AnchorPane styleClass="header" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainWindowController">
    <children>
-      <Label layoutX="154.0" layoutY="23.0" prefHeight="70.0" prefWidth="308.0" text="Server Admin" textAlignment="CENTER">
+      <Label layoutX="159.0" prefHeight="70.0" prefWidth="308.0" text="Server Admin" textAlignment="CENTER">
          <font>
             <Font name="System Bold Italic" size="48.0" />
          </font>
       </Label>
-      <ListView fx:id="myListView" layoutX="94.0" layoutY="93.0" prefHeight="261.0" prefWidth="412.0" />
-      <Button layoutX="293.0" layoutY="361.0" mnemonicParsing="false" text="Button" onAction="#handleButtonAction" />
+      <ListView fx:id="myListView" layoutX="94.0" layoutY="103.0" prefHeight="261.0" prefWidth="412.0" />
+      <Button layoutX="326.0" layoutY="364.0" mnemonicParsing="false" onAction="#handleButtonAction" text="Refresh Log">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Button>
+      <Label layoutX="238.0" layoutY="58.0" text="Activity Log: ">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <Button layoutX="423.0" layoutY="364.0" mnemonicParsing="false" onAction="#exitServer" text="Stop Server">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
       
       
       

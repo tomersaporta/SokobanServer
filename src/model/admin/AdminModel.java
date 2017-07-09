@@ -6,10 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.client.Client;
 
 import commons.SokobanClient;
 
+/**
+ *
+ * Manage the connections to the server.
+ *
+ */
 public class AdminModel {
 	
 	private static class AdminModelHolder{
@@ -20,25 +24,39 @@ public class AdminModel {
 		return AdminModelHolder.instance;
 	}
 	
-	private Map<Integer,SokobanClient> map;
+	private Map<String,SokobanClient> map;
 	
 	public AdminModel() {
 		map=new HashMap<>();
 	}
 	
-	public void addClient(int id, SokobanClient client) {
+	/**
+	 * Adding client to the client's list
+	 * @param id the id of the client
+	 * @param client the object of the client
+	 */
+	public void addClient(String id, SokobanClient client) {
 		map.put(id, client);
 	}
 	
-	public List<Integer> getClients() {
-		List<Integer> clients = new ArrayList<Integer>();
-		for (Integer client : map.keySet())
+	/**
+	 * 
+	 * @return the list of clients
+	 */
+	public List<String> getClients() {
+		List<String> clients = new ArrayList<String>();
+		for (String client : map.keySet())
 			clients.add(client);
 		return clients;
 	}
 	
-	public void disconnectClient(int userId) {
+	/**
+	 * Disconnect client by his id
+	 * @param userId the client id
+	 */
+	public void disconnectClient(String userId) {
 		SokobanClient client = map.get(userId);
+		
 		try {
 			client.getClientSocket().close();
 		} catch (IOException e) {

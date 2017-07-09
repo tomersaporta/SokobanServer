@@ -7,7 +7,10 @@ import search.BFS;
 import search.Searcher;
 import search.Solution;
 import search.State;
-
+/**
+ * 
+ *Adapter which implements getAllPossiableStates when the box needs to reach to the target
+ */
 public class SearchableBoxToTarget extends CommonSearchable {
 
 	private Searcher<Position> search;
@@ -22,6 +25,9 @@ public class SearchableBoxToTarget extends CommonSearchable {
 
 	}
 
+	/**
+	 * Generate all possible states according to the sokoban game
+	 */
 	@Override
 	public HashMap<Action, State<Position>> getAllPossibleStates(State<Position> state) {
 
@@ -96,10 +102,22 @@ public class SearchableBoxToTarget extends CommonSearchable {
 		return states;
 	}
 
+	/**
+	 * Checks if it is legal to move to a specific position
+	 * @param x x in the position
+	 * @param y y in the position
+	 * @return true if legal to move, else false
+	 */
 	private boolean isPossibleToMove(int x, int y) {
 		return this.board[x][y]==' '||this.board[x][y]=='o';
 	}
 
+	/**
+	 * Generate the player position from the last action and the currents position
+	 * @param action the last action
+	 * @param currPos the current position of the player
+	 * @return the player updated position
+	 */
 	private Position getPlayerPos(Action action, Position currPos) {
 
 		if(action!=null){
@@ -118,6 +136,13 @@ public class SearchableBoxToTarget extends CommonSearchable {
 
 	}
 
+	/**
+	 * Checking if the player can move from his current position to target position (using SearchablePlayerToBox).
+	 * @param currPos 
+	 * @param playerPos the initial player position
+	 * @param playerTarget the desirable player position
+	 * @return Solution- the steps that the player needs to in order to get to the desirable position
+	 */
 	private Solution isPlayerCanMoveToBox(Position currPos, Position playerPos, Position playerTarget) {
 		char[][] stateBoard;
 		stateBoard = copyBoard(this.board);

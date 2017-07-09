@@ -4,7 +4,11 @@ import java.util.List;
 
 import search.Action;
 import strips.PlanAction;
-
+/**
+ * Defines move from one position to other position.
+ * It contains the search results. 
+ *
+ */
 public class Move extends PlanAction{
 
 	private List<Action> searchResult;
